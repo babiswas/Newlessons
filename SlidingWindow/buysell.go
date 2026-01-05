@@ -1,21 +1,26 @@
-package SlidingWindow
+package algo
 
 import "math"
 
-func BestTimeSellBuy(arr []int) int {
-	left, right := 0, 0
-	max_profit := math.MinInt
-	for right < len(arr) {
-		if arr[left] > arr[right] {
-			left = right
-			right += 1
+func BuySell(arr []int) (int, int, int) {
+	start := 0
+	end := 0
+	buy_price := 0
+	sell_price := 0
+	maxprofit := math.MinInt
+	for end < len(arr) {
+		if arr[end] < arr[start] {
+			start = end
+			end += 1
 			continue
 		}
-		profit := arr[right] - arr[left]
-		if profit > max_profit {
-			max_profit = profit
+		profit := arr[end] - arr[start]
+		if profit > maxprofit {
+			buy_price = arr[start]
+			sell_price = arr[end]
+			maxprofit = profit
 		}
-		right += 1
+		end += 1
 	}
-	return max_profit
+	return maxprofit, buy_price, sell_price
 }

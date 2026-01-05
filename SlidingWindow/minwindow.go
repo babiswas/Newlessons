@@ -1,7 +1,6 @@
-package SlidingWindow
+package algo
 
 import (
-	"fmt"
 	"math"
 	"strings"
 )
@@ -15,46 +14,48 @@ func isMatching(mp, tp map[string]int) bool {
 	return true
 }
 
-func MinWindowSubstr(str string, substr string) int {
-	temp_lngth := math.MaxInt
-	temp_str := strings.Split(str, "")
-	index1 := 0
-	index2 := 0
-	mp := make(map[string]int)
-	tp := make(map[string]int)
+func MinWindowSubstr(str string, substr string) (int, int, int) {
+	temp_str := strings.Split(substr, "")
 	start_index := 0
 	end_index := 0
-	for _, val := range substr {
-		temp_str := string(val)
-		mp[temp_str] += 1
+	index1 := 0
+	index2 := 0
+	min_window := math.MaxInt
+	mp := make(map[string]int)
+	tp := make(map[string]int)
+	for _, val := range temp_str {
+		_, ok := mp[val]
+		if !ok {
+			mp[val] = 1
+		} else {
+			mp[val] += 1
+		}
 	}
-	for _, val := range substr {
-		temp_str := string(val)
-		tp[temp_str] = 0
+	for _, val := range temp_str {
+		tp[val] = 0
 	}
 	for end_index < len(str) {
-		new_str := temp_str[end_index]
-		_, ok := tp[new_str]
+		newstr := string(str[end_index])
+		_, ok := tp[newstr]
 		if ok {
-			tp[new_str] += 1
+			tp[newstr] += 1
 		}
 		if isMatching(mp, tp) {
 			for isMatching(mp, tp) {
-				if temp_lngth > (end_index - start_index + 1) {
-					temp_lngth = end_index - start_index + 1
+				if end_index-start_index+1 < min_window {
+					min_window = end_index - start_index + 1
 					index1 = start_index
 					index2 = end_index
 				}
-				newtemp := temp_str[start_index]
+				temp := string(str[start_index])
 				start_index += 1
-				_, ok = tp[newtemp]
+				_, ok = tp[temp]
 				if ok {
-					tp[newtemp] -= 1
+					tp[temp] -= 1
 				}
 			}
 		}
 		end_index += 1
 	}
-	fmt.Println(strings.Join(temp_str[index1:index2+1], ""))
-	return temp_lngth
+	return min_window, index1, index2
 }
